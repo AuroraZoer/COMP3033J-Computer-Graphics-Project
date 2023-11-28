@@ -2,6 +2,7 @@
 .idea/
 *.iml
 *.xml
+classes/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
