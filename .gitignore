@@ -1,3 +1,7 @@
+# LWJGL and JInput specific files
+*.dll
+*.dylib
+
 # Compiled class files
 *.class
 
