@@ -383,7 +383,7 @@ public class MainWindow {
             gluLookAt(-400f + x, 150f + y, -800f + z, -400f + x, y, z, 0.0f, 1.0f, 0.0f);
         } else {
             if (focusTeachHuman) {
-                gluLookAt(-425f, 200f, -1000f, teacherX, 100f, 400f, 0.0f, 1.0f, 0.0f);
+                gluLookAt(-425f, 200f, -500f, teacherX, 100f, 400f, 0.0f, 1.0f, 0.0f);
             } else {
                 gluLookAt(-400f + x, 400f + y, -1800f + z, -400f + x, y, z, 0.0f, 1.0f, 0.0f);
             }
@@ -694,7 +694,7 @@ public class MainWindow {
         // Dog
         GL11.glPushMatrix();
         Dog dog = new Dog();
-        GL11.glTranslatef(-480f + myHumanX, 20f, -930f + myHumanZ);
+        GL11.glTranslatef(-470f + myHumanX, 20f, -920f + myHumanZ);
         GL11.glScalef(30f, 30f, 30f);
         GL11.glRotatef(myHumanFacing, 0, 1, 0);
         dog.DrawDog(delta, animation, dogTexture, pelvisTexture, myHumanFacing);
@@ -757,8 +757,7 @@ public class MainWindow {
     Texture floorTexture, wallTexture, tableTexture, platformTexture;
     Texture blackboardTexture, clockTexture, soundTexture, keyboardTexture, screenTexture;
     Texture smileFaceTexture, sleepFaceTexture, coolFaceTexture, shineFaceTexture;
-    Texture tieTexture, bowTieTexture, pelvisTexture;
-    Texture dogTexture;
+    Texture tieTexture, bowTieTexture, pelvisTexture, dogTexture;
 
     /*
      * Any additional textures for your assignment should be written in here. Make a
