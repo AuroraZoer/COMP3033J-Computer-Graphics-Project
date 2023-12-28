@@ -34,10 +34,10 @@ public class SleepHuman {
         GL11.glMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, Utils.ConvertForGL(spot));
         GL11.glPushMatrix();
         {
-            GL11.glTranslatef((float) (-1.5f * Math.cos(facing * Math.PI / 180)), -1.0f, (float) (-1.5f * Math.sin(facing * Math.PI / 180)));
+            GL11.glTranslatef((float) (-0.8f * Math.cos(facing * Math.PI / 180)), -1.0f, (float) (-0.8f * Math.sin(facing * Math.PI / 180)));
             GL11.glRotatef(90f, 1f, 0, 0);
             GL11.glScalef(1f, 1.5f, 1f);
-            cylinder.DrawCylinder(0.5f, 0.01f, 20);
+            cylinder.DrawCylinder(1f, 0.01f, 20);
         }
         GL11.glPopMatrix();
 

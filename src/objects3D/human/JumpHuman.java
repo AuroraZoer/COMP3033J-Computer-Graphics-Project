@@ -38,7 +38,7 @@ public class JumpHuman {
             GL11.glTranslatef((float) ((-1.5f + (-0.1f * LimbRotation / 45f)) * Math.cos(facing * Math.PI / 180)), -1.4f, (float) ((-1.5f + (-0.1f * LimbRotation / 45f)) * Math.sin(facing * Math.PI / 180)));
             GL11.glRotatef(90f, 1f, 0, 0);
             GL11.glScalef(1f, 1.5f, 1f);
-            cylinder.DrawCylinder(0.5f, 0.01f, 20);
+            cylinder.DrawCylinder(0.6f, 0.01f, 20);
         }
         GL11.glPopMatrix();
 

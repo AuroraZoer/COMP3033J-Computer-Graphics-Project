@@ -694,7 +694,7 @@ public class MainWindow {
         // Dog
         GL11.glPushMatrix();
         Dog dog = new Dog();
-        GL11.glTranslatef(-480f + myHumanX, 20f + myHumanY, -930f + myHumanZ);
+        GL11.glTranslatef(-480f + myHumanX, 20f, -930f + myHumanZ);
         GL11.glScalef(30f, 30f, 30f);
         GL11.glRotatef(myHumanFacing, 0, 1, 0);
         dog.DrawDog(delta, animation, dogTexture, pelvisTexture, myHumanFacing);
