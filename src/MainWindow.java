@@ -30,13 +30,20 @@ import static org.lwjgl.util.glu.GLU.gluLookAt;
 
 // Do not touch this class, I will be making a version of it for your 3rd Assignment 
 public class MainWindow {
-
     private boolean MouseOnepressed = true;
     private boolean dragMode = false;
+    private boolean animation = false;
     /**
      * position of pointer
      */
     float x = 0, y = 0, z = 0;
+    float myHumanX = 0, myHumanY = 0, myHumanZ = 0;
+    float myHumanFacing = 180;
+    boolean isJumping = false;
+    float jumpVY = -24f;
+    private boolean myHumanView = false;
+
+
     /**
      * angle of rotation
      */
@@ -58,8 +65,6 @@ public class MainWindow {
     long StartTime; // beginAnimiation
     Arcball MyArcball = new Arcball();
     boolean focusTeachHuman = false;
-    boolean focusShineHuman = false;
-    boolean studentHuman = false;
     boolean keyRelease = true;
     /**
      * Mouse movement
@@ -131,6 +136,7 @@ public class MainWindow {
     }
 
     public void update(int delta) {
+        animation = false;
         // rotate quad
         // rotation += 0.01f * delta;
         int MouseX = Mouse.getX();
@@ -180,21 +186,52 @@ public class MainWindow {
 
         /* bad animation can be turned on or off using A key */
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_A))
-            x += 0.4f * delta;
-        if (Keyboard.isKeyDown(Keyboard.KEY_D))
-            x -= 0.4f * delta;
-
-        if (Keyboard.isKeyDown(Keyboard.KEY_W))
-            z += 0.4f * delta;
-        if (Keyboard.isKeyDown(Keyboard.KEY_S))
-            z -= 0.4f * delta;
-
-        if (Keyboard.isKeyDown(Keyboard.KEY_Q))
+        if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
+            x += 0.3f * delta;
+            myHumanX += 0.3f * delta;
+            animation = !animation;
+            myHumanFacing = -90f;
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
+            x -= 0.3f * delta;
+            myHumanX -= 0.3f * delta;
+            animation = !animation;
+            myHumanFacing = 90f;
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
+            z += 0.3f * delta;
+            myHumanZ += 0.3f * delta;
+            animation = !animation;
+            myHumanFacing = 180f;
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
+            z -= 0.3f * delta;
+            myHumanZ -= 0.3f * delta;
+            animation = !animation;
+            myHumanFacing = 0f;
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
             y += 0.4f * delta;
-
+        }
         if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
             y -= 0.4f * delta;
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)){
+            if (!isJumping){
+                isJumping = true;
+                jumpVY = 20f;
+            }
+        }
+
+        if (isJumping){
+            y = y + jumpVY;
+            myHumanY = myHumanY + jumpVY;
+            jumpVY = jumpVY - 2f;
+        }
+        if (y < 0){
+            isJumping = false;
+            y = 0;
+            myHumanY = 0f;
         }
 
         if (keyRelease) // check done to see if key is released
@@ -203,16 +240,15 @@ public class MainWindow {
                 focusTeachHuman = !focusTeachHuman;
                 Keyboard.next();
                 keyRelease = Keyboard.isKeyDown(Keyboard.KEY_Z);
-            } else if (Keyboard.isKeyDown(Keyboard.KEY_X)) {
-                focusShineHuman = !focusShineHuman;
-                Keyboard.next();
-                keyRelease = Keyboard.isKeyDown(Keyboard.KEY_X);
-            } else if (Keyboard.isKeyDown(Keyboard.KEY_C)) {
-                studentHuman = !studentHuman;
-                Keyboard.next();
-                keyRelease = Keyboard.isKeyDown(Keyboard.KEY_C);
-
             }
+        }
+
+        if (Keyboard.isKeyDown(Keyboard.KEY_F) && keyRelease) {
+            myHumanView = !myHumanView;
+            keyRelease = false;
+        }
+        if (!Keyboard.isKeyDown(Keyboard.KEY_F)) {
+            keyRelease = true;
         }
 
         // Check if key is released
@@ -328,14 +364,14 @@ public class MainWindow {
         MyArcball.getMatrix(CurrentMatrix);
         GL11.glLoadMatrix(CurrentMatrix);
 
-        if (focusTeachHuman) {
-            gluLookAt(-425f, 200f, -1000f, teacherX, 100f, 400f, 0.0f, 1.0f, 0.0f);
-        } else if (focusShineHuman) {
-            gluLookAt(100f, 150f, -1100f, 400f, 100f, 500f, 0.0f, 1.0f, 0.0f);
-        } else if (studentHuman) {
-            gluLookAt(-400f + x, 200f + y, 400f + z, teacherX, 100f + y, -500f + z, 0.0f, 1.0f, 0.0f);
+        if (myHumanView) {
+            gluLookAt(-400f + x, 150f + y, -800f + z, -400f + x, y, z, 0.0f, 1.0f, 0.0f);
         } else {
-            gluLookAt(-400f + x, 1200f + y, -2000f + z, -400f + x, y, z, 0.0f, 1.0f, 0.0f);
+            if (focusTeachHuman) {
+                gluLookAt(-425f, 200f, -1000f, teacherX, 100f, 400f, 0.0f, 1.0f, 0.0f);
+            } else {
+                gluLookAt(-400f + x, 400f + y, -1800f + z, -400f + x, y, z, 0.0f, 1.0f, 0.0f);
+            }
         }
     }
 
@@ -657,6 +693,15 @@ public class MainWindow {
         cylinder.DrawCylinder(10f, 0.01f, 100);
         GL11.glPopMatrix();
 
+        // MyHuman
+        GL11.glPushMatrix();
+        MyHuman myHuman = new MyHuman();
+        GL11.glTranslatef(-400f + myHumanX, 70f + myHumanY, -850f + myHumanZ);
+        GL11.glScalef(45f, 45f, 45f);
+        GL11.glRotatef(myHumanFacing, 0, 1, 0);
+        myHuman.DrawHuman(delta, animation, coolFaceTexture, tieTexture, pelvisTexture, myHumanFacing);
+        GL11.glPopMatrix();
+
         // TeachHuman
         GL11.glPushMatrix();
         TeachHuman myTeachHuman = new TeachHuman();
@@ -685,8 +730,8 @@ public class MainWindow {
         // JumpHuman
         showJumpHuman(delta, 150f, 85f, -500f, 10f);
         showJumpHuman(delta, -950f, 85f, -500f, -10f);
-        showJumpHuman(delta, 250f, 85f, -600f, 20f);
-        showJumpHuman(delta, -1050f, 85f, -600f, -20f);
+//        showJumpHuman(delta, 250f, 85f, -600f, 20f);
+//        showJumpHuman(delta, -1050f, 85f, -600f, -20f);
 
         // HandHuman
         GL11.glPushMatrix();
