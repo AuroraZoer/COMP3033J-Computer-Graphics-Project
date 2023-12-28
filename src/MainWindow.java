@@ -43,7 +43,6 @@ public class MainWindow {
     float jumpVY = -24f;
     private boolean myHumanView = false;
 
-
     /**
      * angle of rotation
      */
@@ -78,6 +77,8 @@ public class MainWindow {
     boolean teacherFaceLeft = true;
     float teacherX = -700f;
     float earthRotation = 0f;
+    private boolean isRotating = true;
+    private boolean isSleepHumanAwake = false;
 
     float[] random = new float[]{(float) Math.random(), (float) Math.random(), (float) Math.random(), (float) Math.random(), (float) Math.random()};
 
@@ -103,11 +104,6 @@ public class MainWindow {
     static float brown[] = {0.5f, 0.25f, 0.0f, 1.0f, 1.0f};
     static float dkgreen[] = {0.0f, 0.5f, 0.0f, 1.0f, 1.0f};
     static float pink[] = {1.0f, 0.6f, 0.6f, 1.0f, 1.0f};
-
-    // static GLfloat light_position[] = {0.0, 100.0, 100.0, 0.0};
-
-    // support method to aid in converting a java float array into a Floatbuffer
-    // which is faster for the opengl layer to process
 
     public void start() {
 
@@ -136,6 +132,20 @@ public class MainWindow {
     }
 
     public void update(int delta) {
+        System.out.println("myHumanX: " + myHumanX + ", myHumanZ: " + myHumanZ);
+        System.out.println("x:" + x + ", z: " + z);
+
+        boolean earthRotationRange = (myHumanX >= -420f && myHumanX <= -180f) && (myHumanZ >= 825f && myHumanZ <= 1100f);
+        if (earthRotationRange && isRotating) {
+            isRotating = false;
+        } else if (!earthRotationRange && !isRotating) {
+            isRotating = true;
+        }
+
+        if (isRotating) {
+            earthRotation = (earthRotation + 1f) % 360f;
+        }
+
         animation = false;
         // rotate quad
         // rotation += 0.01f * delta;
@@ -249,6 +259,11 @@ public class MainWindow {
         }
         if (!Keyboard.isKeyDown(Keyboard.KEY_F)) {
             keyRelease = true;
+        }
+
+        if (Keyboard.isKeyDown(Keyboard.KEY_X)) {
+            boolean isInTargetZone = myHumanX >= 200f && myHumanX <= 400f && myHumanZ >= 600f && myHumanZ <= 800f;
+            isSleepHumanAwake = isInTargetZone;
         }
 
         // Check if key is released
@@ -483,14 +498,14 @@ public class MainWindow {
         GL11.glPopMatrix();
     }
 
-    private void showSleepHuman(float delta, float posX, float posY, float posZ) {
+    private void showSleepHuman(float delta, float posX, float posY, float posZ, boolean isSleepHumanAwake) {
         SleepHuman sleepHuman = new SleepHuman();
         GL11.glPushMatrix();
         float sleepHumanFacing = 180f;
         GL11.glTranslatef(posX, posY, posZ);
         GL11.glRotatef(sleepHumanFacing, 0f, 1.0f, 0f);
         GL11.glScalef(45f, 45f, 45f);
-        sleepHuman.DrawHuman(delta, sleepFaceTexture, tieTexture, pelvisTexture, sleepHumanFacing);
+        sleepHuman.DrawHuman(delta, sleepFaceTexture, tieTexture, pelvisTexture, sleepHumanFacing, isSleepHumanAwake);
         GL11.glPopMatrix();
     }
 
@@ -556,13 +571,7 @@ public class MainWindow {
                 {-400f, (10f + 65f), 100f, 100f, 10f, 100f},
                 {-700f, 10f, 100f, 50f, 10f, 50f},
                 {-700f, (5f + 65f), 100f, 10f, 60f, 10f},
-                {-700f, (10f + 65f), 100f, 100f, 10f, 100f},
-                {-250f, 10f, 300f, 50f, 10f, 50f},
-                {-250f, (5f + 65f), 300f, 10f, 60f, 10f},
-                {-250f, (10f + 65f), 300f, 100f, 10f, 100f},
-                {-550f, 10f, 300f, 50f, 10f, 50f},
-                {-550f, (5f + 65f), 300f, 10f, 60f, 10f},
-                {-550f, (10f + 65f), 300f, 100f, 10f, 100f},
+                {-700f, (10f + 65f), 100f, 100f, 10f, 100f}
         };
 
         for (float[] table : tables) {
@@ -578,12 +587,6 @@ public class MainWindow {
 
         showDiffTexCube(-700f, 75f, 100f, 60f, 30f, 1f, new Texture[]{lightEdgeTexture, lightEdgeTexture, lightEdgeTexture, lightEdgeTexture, lightEdgeTexture, keyboardTexture});
         showDiffTexCube(-700f, 91f, 85f, 60f, 1f, 30f, new Texture[]{lightEdgeTexture, screenTexture, lightEdgeTexture, lightEdgeTexture, lightEdgeTexture, lightEdgeTexture});
-
-        showDiffTexCube(-250f, 75f, 300f, 60f, 30f, 1f, new Texture[]{lightEdgeTexture, lightEdgeTexture, lightEdgeTexture, lightEdgeTexture, lightEdgeTexture, keyboardTexture});
-        showDiffTexCube(-250f, 91f, 285f, 60f, 1f, 30f, new Texture[]{lightEdgeTexture, screenTexture, lightEdgeTexture, lightEdgeTexture, lightEdgeTexture, lightEdgeTexture});
-
-        showDiffTexCube(-550f, 75f, 300f, 60f, 30f, 1f, new Texture[]{lightEdgeTexture, lightEdgeTexture, lightEdgeTexture, lightEdgeTexture, lightEdgeTexture, keyboardTexture});
-        showDiffTexCube(-550f, 91f, 285f, 60f, 1f, 30f, new Texture[]{lightEdgeTexture, screenTexture, lightEdgeTexture, lightEdgeTexture, lightEdgeTexture, lightEdgeTexture});
 
         // Classroom chairs TexCube
         float[][] chairs = {
@@ -606,21 +609,7 @@ public class MainWindow {
                 {-675f, 20f, 220f, 10f, 10f, 50f},
                 {-675f, 20f, 170f, 10f, 10f, 50f},
                 {-700f, 40f, 195f, 60f, 60f, 10f},
-                {-700f, 67f, 220f, 60f, 10f, 80f},
-
-                {-275f, 20f, 370f, 10f, 10f, 50f},
-                {-275f, 20f, 420f, 10f, 10f, 50f},
-                {-225f, 20f, 420f, 10f, 10f, 50f},
-                {-225f, 20f, 370f, 10f, 10f, 50f},
-                {-250f, 40f, 395f, 60f, 60f, 10f},
-                {-250f, 67f, 420f, 60f, 10f, 80f},
-
-                {-575f, 20f, 370f, 10f, 10f, 50f},
-                {-575f, 20f, 420f, 10f, 10f, 50f},
-                {-525f, 20f, 420f, 10f, 10f, 50f},
-                {-525f, 20f, 370f, 10f, 10f, 50f},
-                {-550f, 40f, 395f, 60f, 60f, 10f},
-                {-550f, 67f, 420f, 60f, 10f, 80f},
+                {-700f, 67f, 220f, 60f, 10f, 80f}
         };
 
         for (float[] chair : chairs) {
@@ -671,7 +660,6 @@ public class MainWindow {
         GL11.glTranslatef(-700f, 80f, 130f);
         GL11.glRotatef(90f, 1f, 0, 0);
         GL11.glRotatef(earthRotation, 0, 0, 1f);
-        earthRotation = (earthRotation + 1f) % 360f;
         GL11.glScalef(60f, 60f, 60f);
         GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
         Color.white.bind();
@@ -682,6 +670,7 @@ public class MainWindow {
         earthSphere.DrawTexSphere(1f, 100, 100, earthTexture);
         GL11.glDisable(GL_TEXTURE_2D);
         GL11.glPopMatrix();
+
         // Classroom earth shadow
         Cylinder cylinder = new Cylinder();
         GL11.glColor4f(spot[0], spot[1], spot[2], spot[3]);
@@ -700,6 +689,15 @@ public class MainWindow {
         GL11.glScalef(45f, 45f, 45f);
         GL11.glRotatef(myHumanFacing, 0, 1, 0);
         myHuman.DrawHuman(delta, animation, coolFaceTexture, tieTexture, pelvisTexture, myHumanFacing);
+        GL11.glPopMatrix();
+
+        // Dog
+        GL11.glPushMatrix();
+        Dog dog = new Dog();
+        GL11.glTranslatef(-480f + myHumanX, 20f + myHumanY, -930f + myHumanZ);
+        GL11.glScalef(30f, 30f, 30f);
+        GL11.glRotatef(myHumanFacing, 0, 1, 0);
+        dog.DrawDog(delta, animation, dogTexture, pelvisTexture, myHumanFacing);
         GL11.glPopMatrix();
 
         // TeachHuman
@@ -730,8 +728,6 @@ public class MainWindow {
         // JumpHuman
         showJumpHuman(delta, 150f, 85f, -500f, 10f);
         showJumpHuman(delta, -950f, 85f, -500f, -10f);
-//        showJumpHuman(delta, 250f, 85f, -600f, 20f);
-//        showJumpHuman(delta, -1050f, 85f, -600f, -20f);
 
         // HandHuman
         GL11.glPushMatrix();
@@ -744,12 +740,10 @@ public class MainWindow {
         GL11.glPopMatrix();
 
         // LearnHuman
-        showLearnHuman(delta,-100f, 46f, -170f);
         showLearnHuman(delta,-700f, 46f, -170f);
 
         // SleepHuman
-        showSleepHuman(delta,-250f, 46f, -370f);
-        showSleepHuman(delta,-550f, 46f, -370f);
+        showSleepHuman(delta, -100f, 46f, -170f, isSleepHumanAwake);
 
     }
 
@@ -764,6 +758,7 @@ public class MainWindow {
     Texture blackboardTexture, clockTexture, soundTexture, keyboardTexture, screenTexture;
     Texture smileFaceTexture, sleepFaceTexture, coolFaceTexture, shineFaceTexture;
     Texture tieTexture, bowTieTexture, pelvisTexture;
+    Texture dogTexture;
 
     /*
      * Any additional textures for your assignment should be written in here. Make a
@@ -801,6 +796,7 @@ public class MainWindow {
         bowTieTexture = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/human/bowTie.png"));
         pelvisTexture = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/human/pelvis.png"));
 
+        dogTexture = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/human/dog.png"));
         System.out.println("Texture loaded okay ");
     }
 }

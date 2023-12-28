@@ -20,7 +20,7 @@ public class SleepHuman {
     }
 
     // Implement using notes in Animation lecture
-    public void DrawHuman(float delta, Texture faceTexture, Texture chestTexture, Texture pelvisTexture, float facing) {
+    public void DrawHuman(float delta, Texture faceTexture, Texture chestTexture, Texture pelvisTexture, float facing, boolean isSleepHumanAwake) {
         // Calculate the angle of rotation based on the animation delta
         float speed = 20f;  // Controls the speed of the animation
         float theta = (float) (delta * 2 * Math.PI * speed);
@@ -58,7 +58,11 @@ public class SleepHuman {
             GL11.glPushMatrix();
             {
                 GL11.glTranslatef(0.0f, 0.5f, 0.0f);
-                GL11.glRotatef(-65f, 1f, 0, 0);
+                if (isSleepHumanAwake) {
+                    GL11.glRotatef(-20f, 1f, 0, 0);
+                } else {
+                    GL11.glRotatef(-65f, 1f, 0, 0);
+                }
                 chestTexture.bind();
                 GL11.glEnable(GL_TEXTURE_2D);
                 GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
@@ -102,7 +106,11 @@ public class SleepHuman {
                         GL11.glPushMatrix();
                         {
                             GL11.glTranslatef(0.0f, 0.0f, 0.0f);
-                            GL11.glRotatef(-140.0f, 1.0f, 0.0f, 0.0f);
+                            if (isSleepHumanAwake) {
+                                GL11.glRotatef(-180.0f, 1.0f, 0.0f, 0.0f);
+                            } else {
+                                GL11.glRotatef(-140.0f, 1.0f, 0.0f, 0.0f);
+                            }
                             cylinder.DrawCylinder(0.15f, 0.7f, 32);
 
                             // Right Elbow
@@ -154,7 +162,11 @@ public class SleepHuman {
                         GL11.glPushMatrix();
                         {
                             GL11.glTranslatef(0.0f, 0.0f, 0.0f);
-                            GL11.glRotatef(-140.0f, 1.0f, 0.0f, 0.0f);
+                            if (isSleepHumanAwake) {
+                                GL11.glRotatef(-180.0f, 1.0f, 0.0f, 0.0f);
+                            } else {
+                                GL11.glRotatef(-140.0f, 1.0f, 0.0f, 0.0f);
+                            }
                             cylinder.DrawCylinder(0.15f, 0.7f, 32);
 
                             // Left Elbow

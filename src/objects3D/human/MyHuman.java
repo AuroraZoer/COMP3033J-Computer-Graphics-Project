@@ -14,7 +14,6 @@ public class MyHuman {
     static float[] white = {1.0f, 1.0f, 1.0f, 1.0f};
     static float[] black = {0.0f, 0.0f, 0.0f, 1.0f};
     static float[] grey = {0.5f, 0.5f, 0.5f, 1.0f};
-    static float[] spot = {0.1f, 0.1f, 0.1f, 0.5f};
 
     public MyHuman() {
     }
@@ -22,7 +21,7 @@ public class MyHuman {
     // Implement using notes in Animation lecture
     public void DrawHuman(float delta, boolean animation, Texture faceTexture, Texture chestTexture, Texture pelvisTexture, float facing) {
         // Calculate the angle of rotation based on the animation delta
-        float speed = 6f;  // Controls the speed of the animation
+        float speed = 10f;  // Controls the speed of the animation
         float theta = (float) (delta * 2 * Math.PI * speed);
         float LimbRotation;
 
@@ -35,18 +34,6 @@ public class MyHuman {
         Sphere sphere = new Sphere();
         TexSphere texSphere = new TexSphere();
         Cylinder cylinder = new Cylinder();
-
-        // Shadow
-//        GL11.glColor4f(spot[0], spot[1], spot[2], spot[3]);
-//        GL11.glMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, Utils.ConvertForGL(spot));
-//        GL11.glPushMatrix();
-//        {
-//            GL11.glTranslatef((float) (-1.5f * Math.cos(facing * Math.PI / 180)), -1.5f, (float) (-1.5f * Math.sin(facing * Math.PI / 180)));
-//            GL11.glRotatef(90f, 1f, 0, 0);
-//            GL11.glScalef(1f, 1.5f, 1f);
-//            cylinder.DrawCylinder(0.5f, 0.01f, 20);
-//        }
-//        GL11.glPopMatrix();
 
         // Pelvis
         GL11.glColor3f(grey[0], grey[1], grey[2]);  // Pelvis colour
