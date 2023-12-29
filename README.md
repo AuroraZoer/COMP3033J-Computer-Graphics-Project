@@ -1,8 +1,5 @@
 # COMP3033J-Computer-Graphics-Project
 
-- Yiran Zhao
-- UCD Number: 21207295
-
 - Click [here](https://youtu.be/X-0f-thmvQM) to watch the project1 video.
 - Click [here](https://youtu.be/jkHe-UU_CKA) to watch the project2 video.
 
