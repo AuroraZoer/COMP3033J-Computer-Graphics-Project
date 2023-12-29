@@ -132,8 +132,8 @@ public class MainWindow {
     }
 
     public void update(int delta) {
-        System.out.println("myHumanX: " + myHumanX + ", myHumanZ: " + myHumanZ);
-        System.out.println("x:" + x + ", z: " + z);
+//        System.out.println("myHumanX: " + myHumanX + ", myHumanZ: " + myHumanZ);
+//        System.out.println("x:" + x + ", z: " + z);
 
         boolean earthRotationRange = (myHumanX >= -420f && myHumanX <= -180f) && (myHumanZ >= 825f && myHumanZ <= 1100f);
         if (earthRotationRange && isRotating) {
